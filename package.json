@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "laravel-nuxt": "^2.0.2",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "eslint": "^6.0.1"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.10.3",
