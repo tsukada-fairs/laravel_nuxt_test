@@ -1,5 +1,10 @@
 <template>
   <div class="container">
-      test
+      testaaaatest222aaabb
   </div>
 </template>
+
+<script>
+export default {
+}
+</script>

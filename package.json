@@ -5,17 +5,15 @@
   "author": "naoyuki_tsukada",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
+    "start": "laravel-nuxt dev",
+    "build": "laravel-nuxt build"
   },
   "dependencies": {
+    "laravel-nuxt": "^2.0.2",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.10.3",
-    "@nuxtjs/proxy": "^1.3.3",
-    "nuxt-laravel": "^4.2.7"
+    "@nuxtjs/proxy": "^1.3.3"
   }
 }

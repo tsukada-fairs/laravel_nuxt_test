@@ -1,6 +1,6 @@
+const laravelNuxt = require("laravel-nuxt");
 
-export default {
-  mode: 'spa',
+module.exports = laravelNuxt({
   /*
   ** Headers of the page
   */
@@ -15,44 +15,14 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
-  /*
-  ** Global CSS
-  */
-  css: [
-  ],
-  /*
-  ** Plugins to load before mounting the App
-  */
   plugins: [
-  ],
-  /*
-  ** Nuxt.js dev-modules
-  */
-  buildModules: [
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
-    'nuxt-laravel', //追加
+    // 'nuxt-laravel', //追加
     "@nuxtjs/axios",
+    '@nuxtjs/proxy'
   ],
-  /*
-  ** Build configuration
-  */
-  build: {
-    /*
-    ** You can extend webpack config here
-    */
-    extend (config, ctx) {
-    }
-  },
-  srcDir: 'resources/nuxt/', //追加
-  router: {
-    base: "/app/" //追加 任意のディレクトリ名
-  },
-}
+})
