@@ -47,7 +47,16 @@
         </div>
       </slide>
       <slide>
-        <div class="slide-wrap">slide 4</div>
+        <div class="slide-wrap">
+          <p class="title">4.既往歴について</p>
+          <div class="question-wrap">
+            <p class="question">Q. 高血圧はありますか？</p>
+            <div class="question-item-wrap">
+              <p><label><input type="radio" name="hypertensionFlg0">ある</label></p>
+              <p style="margin-top:10px;"><label><input type="radio" name="hypertensionFlg0">ない</label></p>
+            </div>
+          </div>
+        </div>
       </slide>
       
       <hooper-progress slot="hooper-addons"></hooper-progress>
