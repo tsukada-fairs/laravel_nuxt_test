@@ -17,6 +17,10 @@ html {
   box-sizing: border-box;
 }
 
+body {
+  height: 100vh;
+}
+
 *,
 *:before,
 *:after {
