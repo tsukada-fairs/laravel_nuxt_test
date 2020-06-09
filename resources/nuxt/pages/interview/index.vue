@@ -1,69 +1,37 @@
 <template>
   <div>
     <hooper ref="slider" :settings="hooperSettings" @slide="after">
-      <slide>
+      <slide v-for="interview in interviews" :key="interview.id">
         <div class="slide-wrap">
-          <p class="title">1. 身長・体重</p>
+          <!-- <p class="title">1. 身長・体重</p> -->
           <div class="question-wrap">
-            <p class="question">Q. 身長、体重の入力をお願いいたします。</p>
-            <p class="question-attention">※ MRI撮影時に必要なため、ご入力ください。</p>
-            <div class="question-item-wrap-flex">
-              <div class="question-item">身長</div>
-              <div class="question-item-input">
-                <input type="number" name="height"> cm
+            <p class="question">Q. {{interview.question}}</p>
+            <p class="question-attention">{{interview.attention}}</p>
+            <div v-if="interview.type == 2">
+              <div class="question-item-wrap-flex" v-for="questionItem in interview.questionItems" :key="questionItem.id">
+                <div class="question-item">{{questionItem.name}}</div>
+                <div class="question-item-input">
+                  <div v-for="(input, index) in questionItem.inputs" :key="index">
+                    <input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="questionItem.type" :name="`name_${interview.id}_${questionItem.id}_${input.id}`" :value="input.text"> cm
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="question-item-wrap-flex">
-              <div class="question-item">体重</div>
-              <div class="question-item-input">
-                <input type="number" name="weight"> kg
+            <div v-if="interview.type == 1">
+              <div class="question-item-wrap">
+                <p v-for="questionItem in interview.questionItems" :key="questionItem.id">
+                  <label><input :ref="`input_${interview.id}`" :type="questionItem.type" :name="`name_${interview.id}`" :value="questionItem.text">{{questionItem.text}}</label>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </slide>
-      <slide>
-        <div class="slide-wrap">
-          <p class="title">2.脳ドックについて</p>
-          <div class="question-wrap">
-            <p class="question">Q. 今までに脳ドックを受けたことがありますか？</p>
-            <div class="question-item-wrap">
-              <p><label><input type="radio" name="doc">ある</label></p>
-              <p style="margin-top:10px;"><label><input type="radio" name="doc">ない</label></p>
-            </div>
-          </div>
-        </div>
-      </slide>
-      <slide>
-        <div class="slide-wrap">
-          <p class="title">3.MRIは強い磁場と電波を使用して身体の断層画像を撮影します。より安全に検査を行うため、次の質問にお答えください。</p>
-          <div class="question-wrap">
-            <p class="question">Q. 体内に、下記のものはありますか？</p>
-            <div class="question-item-wrap">
-              <p><label><input type="radio" name="internalDevicesFlg">ある</label></p>
-              <p style="margin-top:10px;"><label><input type="radio" name="internalDevicesFlg">ない</label></p>
-            </div>
-          </div>
-        </div>
-      </slide>
-      <slide>
-        <div class="slide-wrap">
-          <p class="title">4.既往歴について</p>
-          <div class="question-wrap">
-            <p class="question">Q. 高血圧はありますか？</p>
-            <div class="question-item-wrap">
-              <p><label><input type="radio" name="hypertensionFlg0">ある</label></p>
-              <p style="margin-top:10px;"><label><input type="radio" name="hypertensionFlg0">ない</label></p>
-            </div>
-          </div>
-        </div>
-      </slide>
-      
       <hooper-progress slot="hooper-addons"></hooper-progress>
     </hooper>
     <div class="btn-wrap">
-      <button id="btn-prev" @click="prev" v-show="page > 1">戻る</button>
-      <button id="btn-next" class="btn-next" @click="next" v-show="maxPage > page">次へ</button>
+      <button id="btn-prev" @click="prev" v-show="currentIndex > 0">戻る</button>
+      <button id="btn-next" class="btn-next" @click="next" v-show="hasNext">次へ</button>
     </div>
   </div>
 </template>
@@ -81,7 +49,119 @@ export default {
   data: function() {
     return {
       page: 1,
+      currentIndex: 0,
+      hasNext: true,
       maxPage: 4,
+      interviews: [
+        {
+          id: 1,
+          type: 2,
+          question: '身長、体重の入力をお願いいたします。',
+          attention: '※ MRI撮影時に必要なため、ご入力ください。',
+          questionItems: [
+            {
+              id: 1,
+              name: '身長',
+              inputs: [
+                {
+                  id: 1,
+                  type: 'number'
+                }
+              ]
+            },
+            {
+              id: 2,
+              name: '体重',
+              inputs: [
+                {
+                  id: 2,
+                  type: 'number'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          type: 1,
+          question: '今までに脳ドックを受けたことがありますか？',
+          questionItems: [
+            {
+              id: 3,
+              text: 'ある',
+              type: 'radio'
+            },
+            {
+              id: 4,
+              text: 'ない',
+              type: 'radio'
+            }
+          ]
+        },
+        {
+          id: 3,
+          type: 1,
+          question: 'あると答えた方のみご記入ください。',
+          questionItems: [
+            {
+              id: 4,
+              text: 'ある',
+              type: 'radio'
+            },
+            {
+              id: 5,
+              text: 'ない',
+              type: 'radio'
+            }
+          ]
+        },
+        {
+          id: 4,
+          type: 1,
+          question: 'テスト1',
+          questionItems: [
+            {
+              id: 5,
+              text: 'ある',
+              type: 'radio'
+            },
+            {
+              id: 6,
+              text: 'ない',
+              type: 'radio'
+            }
+          ]
+        },
+        {
+          id: 5,
+          type: 1,
+          question: 'テスト2',
+          questionItems: [
+            {
+              id: 7,
+              text: 'ある',
+              type: 'radio'
+            },
+            {
+              id: 8,
+              text: 'ない',
+              type: 'radio'
+            }
+          ]
+        }
+      ],
+      pageControl: [
+        {
+          pageId: 3,
+          questionItemId: 2,
+          answerItemId: 3
+        },
+        {
+          pageId: 4,
+          questionItemId: 2,
+          answerItemId: 3
+        }
+      ],
       hooperSettings: { 
         mouseDrag: false,
         touchDrag: false,
@@ -102,22 +182,87 @@ export default {
   },
   methods: {
     prev: function() {
-      this.$refs.slider.slidePrev();
+      let fullfilled = this.controlPage(this.currentIndex - 1);
+
+      if(fullfilled) {
+        this.currentIndex--;
+        this.$refs.slider.slideTo(this.currentIndex);
+      } else {
+        // if (!(this.currentIndex in this.interviews)) {
+        //   return;
+        // }
+        this.currentIndex--;
+        this.prev();
+      }
+      this.hasNext = true;
     },
     next: function() {
-      this.$refs.slider.slideNext();
+      let fullfilled = this.controlPage(this.currentIndex + 1);
+
+      if(fullfilled) {
+        this.currentIndex++;
+        this.$refs.slider.slideTo(this.currentIndex);
+      } else {
+        if (!(this.currentIndex in this.interviews)) {
+          return;
+        }
+        this.currentIndex++;
+        this.next();
+      }
+
+      if (!((this.currentIndex + 1) in this.interviews)) {
+        this.hasNext = false;
+      }
     },
     after: function(payload) {
       if(payload.slideFrom == null) {
         return;
       }
 
-      if(payload.currentSlide > payload.slideFrom) {
-        this.page++;
-      } else {
-        this.page--;
+      // if(payload.currentSlide > payload.slideFrom) {
+      //   // this.page++;
+      //   this.currentIndex++;
+      // } else {
+      //   // this.page--;
+      //   this.currentIndex--;
+      // }
+      this.$router.push('/interview?page=' + (this.currentIndex + 1));
+    },
+    controlPage: function(baseIndex) {
+      let nextPageControl = [];
+      for(let i in this.pageControl) {
+        let page = this.pageControl[i];
+        if(page.pageId == this.interviews[baseIndex].id) {
+          nextPageControl.push(page);
+        }
       }
-      this.$router.push('/interview?page=' + this.page);
+
+      let fullfilled = true;
+      for(let i in nextPageControl) {
+        let page = nextPageControl[i];
+        let text = '';
+        for(let j in this.interviews) {
+          if(this.interviews[j].id == page.questionItemId) {
+            for(let k in this.interviews[j].questionItems) {
+              if(this.interviews[j].questionItems[k].id == page.answerItemId) {
+                text = this.interviews[j].questionItems[k].text
+              }
+            }
+          }
+        }
+        let partFullfilled = false;
+        let name = 'input_' + page.questionItemId;
+        for(let k in this.$refs[name]) {
+          if(this.$refs[name][k].checked && this.$refs[name][k].value == text) {
+            partFullfilled = true;
+          }
+        }
+        if(!partFullfilled) {
+          fullfilled = false
+        }
+      }
+
+      return fullfilled;
     }
   }
 };
