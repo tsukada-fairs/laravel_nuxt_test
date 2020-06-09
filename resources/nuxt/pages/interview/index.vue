@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 15px;">
     <p class="section">{{section}}</p>
     <hooper ref="slider" :settings="hooperSettings" @slide="after">
       <slide v-for="interview in interviews" :key="interview.id">
@@ -15,7 +15,7 @@
                     <span v-if="input.type == 'number' || input.type == 'text'">{{input.before}} <input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"> {{input.after}}</span>
                     <span v-if="input.type == 'radio'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}`" :value="input.label"> {{input.label}}</label></span>
                     <span v-if="input.type == 'checkbox'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}[]`" :value="input.label"> {{input.label}}</label></span>
-                    <span v-if="input.type == 'textarea'"><textarea cols="50" rows="5" :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"></textarea></span>
+                    <span v-if="input.type == 'textarea'"><textarea rows="5" :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"></textarea></span>
                   </div>
                 </div>
               </div>
@@ -716,7 +716,7 @@ export default {
 .section {
   text-align: center;
   font-size: 20px;
-  margin: 15px 0;
+  padding: 15px;
 }
 .slide-wrap {
   padding: 30px;
@@ -743,6 +743,10 @@ export default {
   .btn-next {
     margin-left: 10px;
   }
+}
+
+textarea {
+  width: 100%;
 }
 
 @media (min-width: 1021px) {
