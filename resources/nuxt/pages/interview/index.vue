@@ -11,11 +11,11 @@
               <div class="question-item-wrap" v-for="questionItem in interview.questionItems" :key="questionItem.id">
                 <div class="question-item">{{questionItem.name}}</div>
                 <div class="question-item-input">
-                  <div v-for="(input, index) in questionItem.inputs" :key="index">
-                    <span v-if="input.type == 'number' || input.type == 'text'">{{input.before}} <input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"> {{input.after}}</span>
-                    <span v-if="input.type == 'radio'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}`" :value="input.label"> {{input.label}}</label></span>
-                    <span v-if="input.type == 'checkbox'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}[]`" :value="input.label"> {{input.label}}</label></span>
-                    <span v-if="input.type == 'textarea'"><textarea rows="5" :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"></textarea></span>
+                  <div v-for="(input, index) in questionItem.inputs" :key="index" class="question-item-input-wrap">
+                    <div v-if="input.type == 'number' || input.type == 'text'">{{input.before}} <label class="ef"><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"></label> {{input.after}}</div>
+                    <div v-if="input.type == 'radio'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}`" :value="input.label"> {{input.label}}</label></div>
+                    <div v-if="input.type == 'checkbox'"><label><input :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :type="input.type" :name="`name_${interview.id}_${questionItem.id}[]`" :value="input.label"> {{input.label}}</label></div>
+                    <div v-if="input.type == 'textarea'"><textarea rows="5" :ref="`input_${interview.id}_${questionItem.id}_${input.id}`" :name="`name_${interview.id}_${questionItem.id}_${input.id}`"></textarea></div>
                   </div>
                 </div>
               </div>
@@ -731,6 +731,9 @@ export default {
     .question-item-wrap {
       margin-top: 20px;
       font-size: 90%;
+      .question-item-input-wrap > div {
+        margin-top: 8px;
+      }
     }
   }
 }
@@ -747,6 +750,25 @@ export default {
 
 textarea {
   width: 100%;
+}
+
+input[type='text'], input[type='number'] {
+  font: 15px/24px sans-serif;
+  box-sizing: border-box;
+  padding: 0.3em;
+  transition: 0.3s;
+  letter-spacing: 1px;
+  color: #aaaaaa;
+  border: 1px solid #1b2538;
+  border-radius: 4px;
+}
+.ef{
+  input[type='text']:focus,
+  input[type='number']:focus {
+    border: 1px solid #da3c41;
+    outline: none;
+    box-shadow: 0 0 5px 1px rgba(218,60,65, .5);
+  }
 }
 
 @media (min-width: 1021px) {
