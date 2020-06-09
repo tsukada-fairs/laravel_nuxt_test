@@ -750,6 +750,11 @@ export default {
 
 textarea {
   width: 100%;
+  font: 15px/24px sans-serif;
+  transition: 0.3s;
+  letter-spacing: 1px;
+  border: 1px solid #1b2538;
+  border-radius: 4px;
 }
 
 input[type='text'], input[type='number'] {
@@ -758,18 +763,18 @@ input[type='text'], input[type='number'] {
   padding: 0.3em;
   transition: 0.3s;
   letter-spacing: 1px;
-  color: #aaaaaa;
+  // color: #aaaaaa;
   border: 1px solid #1b2538;
   border-radius: 4px;
 }
-.ef{
-  input[type='text']:focus,
-  input[type='number']:focus {
-    border: 1px solid #da3c41;
-    outline: none;
-    box-shadow: 0 0 5px 1px rgba(218,60,65, .5);
-  }
-}
+// .ef{
+//   input[type='text']:focus,
+//   input[type='number']:focus {
+//     border: 1px solid #da3c41;
+//     outline: none;
+//     box-shadow: 0 0 5px 1px rgba(218,60,65, .5);
+//   }
+// }
 
 @media (min-width: 1021px) {
   .slide-wrap{
