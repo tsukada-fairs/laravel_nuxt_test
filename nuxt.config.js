@@ -16,13 +16,14 @@ module.exports = laravelNuxt({
     ]
   },
   plugins: [
+    { src: '@/plugins/vee-validate'}
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
     // 'nuxt-laravel', //追加
-    "@nuxtjs/axios",
-    '@nuxtjs/proxy'
+    // "@nuxtjs/axios",
+    // '@nuxtjs/proxy'
   ],
 })
