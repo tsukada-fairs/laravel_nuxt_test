@@ -879,7 +879,8 @@ export default {
       hooperSettings: { 
         mouseDrag: false,
         touchDrag: false,
-        wheelControl: false
+        wheelControl: false,
+        keysControl: false
       }
     }
   },
