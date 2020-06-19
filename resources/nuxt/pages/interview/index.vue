@@ -13,7 +13,26 @@
                   <div class="question-item-input">
                     <div v-for="answerItem in questionItem.answerItems" :key="answerItem.id" class="question-item-input-wrap">
                       <validation-provider v-slot="{ errors }" :rules="questionItem.required_flag == 1 ? 'required' : ''" :name="questionItem.question" tag="div">
-                        <div v-if="answerItem.type == 'number' || answerItem.type == 'text'">{{answerItem.before_string}} <label class="ef"><input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]"></label> {{answerItem.after_string}}</div>
+                        <div v-if="answerItem.type == 'text'">
+                          {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
+                        </div>
+                        <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
+                          <div style="margin-right: 5px;">
+                            <div style="margin-bottom: 3px;">
+                              <button
+                                v-longclick="() => stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                @click="stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)" type="button" class="number-plus-btn">＋</button>
+                            </div>
+                            <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :value="answerItem.num_default" :placeholder="answerItem.placeholder">
+                            <div style="margin-top: 3px;">
+                              <button
+                                v-longclick="() => stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                @click="stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                type="button" class="number-plus-btn">ー</button>
+                            </div>
+                          </div>
+                          <div>{{answerItem.after_string}}</div>
+                        </div>
                         <div v-if="answerItem.type == 'radio'"><label><input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]" :value="answerItem.caption"> {{answerItem.caption}}</label></div>
                         <div v-if="answerItem.type == 'checkbox'"><label><input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]"> {{answerItem.caption}}</label></div>
                         <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]"></textarea></div>
@@ -32,7 +51,27 @@
                       <div class="question-item-input">
                         <div v-for="answerItem in childItem.answerItems" :key="answerItem.id" class="question-item-input-wrap">
                           <validation-provider v-slot="{ errors }" :rules="childItem.required_flag == 1 ? 'required' : ''" :name="childItem.question" tag="div">
-                            <div v-if="answerItem.type == 'number' || answerItem.type == 'text'">{{answerItem.before_string}} <label class="ef"><input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]"></label> {{answerItem.after_string}}</div>
+                            <div v-if="answerItem.type == 'text'">
+                              {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
+                            </div>
+                            <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
+                              <div style="margin-right: 5px;">
+                                <div style="margin-bottom: 3px;">
+                                  <button 
+                                    v-longclick="() => stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    @click="stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    type="button" class="number-plus-btn">＋</button>
+                                </div>
+                                <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder">
+                                <div style="margin-top: 3px;">
+                                  <button 
+                                    v-longclick="() => stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    @click="stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    type="button" class="number-plus-btn">ー</button>
+                                </div>
+                              </div>
+                              <div>{{answerItem.after_string}}</div>
+                            </div>
                             <div v-if="answerItem.type == 'radio'"><label><input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.caption" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]"> {{answerItem.caption}}</label></div>
                             <div v-if="answerItem.type == 'checkbox'"><label><input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]"> {{answerItem.caption}}</label></div>
                             <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]"></textarea></div>
@@ -112,7 +151,7 @@ export default {
                           num_default: 165,
                           num_min: 110,
                           num_max: 250,
-                          num_Interval: 1
+                          num_interval: 1
                         }
                       ]
                     },
@@ -134,7 +173,7 @@ export default {
                           num_default: 60,
                           num_min: 10,
                           num_max: 200,
-                          num_Interval: 1
+                          num_interval: 1
                         }
                       ]
                     }
@@ -200,7 +239,7 @@ export default {
                       answerItems: [
                         {
                           id: 5,
-                          type: 'number',
+                          type: 'text',
                           caption: '',
                           before_string: '',
                           after_string: '年',
@@ -208,7 +247,7 @@ export default {
                         },
                         {
                           id: 6,
-                          type: 'number',
+                          type: 'text',
                           caption: '',
                           before_string: '',
                           after_string: '月',
@@ -858,6 +897,9 @@ export default {
                 if(!(keyName in this.interviewAnswers)) {
                   this.$set(this.interviewAnswers, keyName, []);
                 }
+            } else if(answerItem.type == 'number') {
+              keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;;
+              this.$set(this.interviewAnswers, keyName, answerItem.num_default);
             } else {
               keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;
               this.$set(this.interviewAnswers, keyName, '');
@@ -875,12 +917,13 @@ export default {
                 if(!(keyName in this.interviewAnswers)) {
                   this.$set(this.interviewAnswers, keyName, []);
                 }
-                console.log(this.interviewAnswers)
+              } else if(answerItem.type == 'number') {
+                keyName = this.interviewSheet.id + '_' + childItem.id + '_' + answerItem.id;;
+                this.$set(this.interviewAnswers, keyName, answerItem.num_default);
               } else {
                 keyName = this.interviewSheet.id + '_' + childItem.id + '_' + answerItem.id;
                 this.$set(this.interviewAnswers, keyName, '');
               }
-              // this.interviewAnswers[this.interviewSheet.id + '_' + childItem.id + '_' + answerItem.id] = '';
             }
           }
         }
@@ -948,6 +991,9 @@ export default {
       // }
       // this.$router.push('/interview?page=' + (this.currentIndex + 1));
     },
+    /**
+     * ページ制御
+     */
     controlPage: function(baseIndex) {
       let nextPageControl = [];
       for(let i in this.pageControl) {
@@ -1008,6 +1054,28 @@ export default {
       }
 
       return fullfilled;
+    },
+    /**
+     * input numberの加算
+     */
+    stepUpNumber: function(ref, answerItem) {
+      const input = this.$refs['input_' + ref][0];
+      if(answerItem.num_max > input.value) {
+        input.focus();
+        input.stepUp(answerItem.num_interval);
+        this.interviewAnswers[ref] = input.value;
+      }
+    },
+    /**
+     * input numberの減算
+     */
+    stepDownNumber: function(ref, answerItem) {
+      const input = this.$refs['input_' + ref][0];
+      if(answerItem.num_min < input.value) {
+        input.focus();
+        input.stepDown(answerItem.num_interval);
+        this.interviewAnswers[ref] = input.value;
+      }
     }
   }
 };
@@ -1049,6 +1117,10 @@ export default {
     }
   }
 }
+.answerItem-wrap-flex {
+  display: flex;
+  align-items: center;  /* 子要素をflexboxにより中央に配置する */
+}
 .btn-wrap {
   text-align: center;
   button {
@@ -1075,6 +1147,43 @@ export default {
   letter-spacing: 0.2em;
 }
 
+.number-plus-btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  // line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  width: 100px;
+  height: 20px;
+  line-height: 1;
+}
+
+.number-plus-btn:focus {
+  outline: none;
+}
+
+
+input[type="number"]::-webkit-outer-spin-button, 
+input[type="number"]::-webkit-inner-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+} 
+input[type="number"] { 
+  -moz-appearance:textfield; 
+} 
+
 textarea {
   width: 100%;
   font: 15px/24px sans-serif;
@@ -1093,6 +1202,11 @@ input[type='text'], input[type='number'] {
   // color: #aaaaaa;
   border: 1px solid #1b2538;
   border-radius: 4px;
+}
+
+input[type='number'] {
+  width: 100px;
+  font-size: 110%;
 }
 
 @media (min-width: 1021px) {

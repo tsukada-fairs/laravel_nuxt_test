@@ -16,7 +16,8 @@ module.exports = laravelNuxt({
     ]
   },
   plugins: [
-    { src: '@/plugins/vee-validate'}
+    { src: '@/plugins/vee-validate'},
+    { src: '@/plugins/vue-long-click'}
   ],
   /*
   ** Nuxt.js modules
