@@ -33,9 +33,16 @@
                           </div>
                           <div>{{answerItem.after_string}}</div>
                         </div>
-                        <div v-if="answerItem.type == 'radio'"><label><input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]" :value="answerItem.caption"> {{answerItem.caption}}</label></div>
-                        <div v-if="answerItem.type == 'checkbox'"><label><input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]"> {{answerItem.caption}}</label></div>
+                        <div v-if="answerItem.type == 'radio'" style="position: relative;">
+                          <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
+                          <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
+                        </div>
+                        <div v-if="answerItem.type == 'checkbox'">
+                          <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]">
+                          <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
+                        </div>
                         <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]"></textarea></div>
+                        <p class="question-attention">{{answerItem.memo}}</p>
                         <p v-show="errors.length" class="error">
                           {{ errors[0] }}
                         </p>
@@ -72,9 +79,16 @@
                               </div>
                               <div>{{answerItem.after_string}}</div>
                             </div>
-                            <div v-if="answerItem.type == 'radio'"><label><input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.caption" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]"> {{answerItem.caption}}</label></div>
-                            <div v-if="answerItem.type == 'checkbox'"><label><input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]"> {{answerItem.caption}}</label></div>
+                            <div v-if="answerItem.type == 'radio'" style="position: relative;">
+                              <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
+                              <label :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
+                            </div>
+                            <div v-if="answerItem.type == 'checkbox'">
+                              <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" class="checkbox-inline__input"> 
+                              <label class="checkbox-inline__label" :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
+                            </div>
                             <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]"></textarea></div>
+                            <p class="question-attention">{{answerItem.memo}}</p>
                             <p v-show="errors.length" class="error">
                               {{ errors[0] }}
                             </p>
@@ -88,8 +102,8 @@
             </div>
           </div>
           <div class="btn-wrap">
-            <button id="btn-prev" class="btn" @click="prev" v-show="currentIndex > 0">戻る</button>
-            <button id="btn-next" class="btn-next btn" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
+            <button id="btn-prev" class="btn btn-back" @click="prev" v-show="currentIndex > 0">戻る</button>
+            <button id="btn-next" class="btn btn-next" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
           </div>
         </validation-observer>
       </slide>
@@ -138,12 +152,13 @@ export default {
                       type: 2,
                       question: '身長',
                       memo: '',
-                      caution: '小数点以下四捨五入',
+                      caution: '',
                       required_flag: 1,
                       answerItems: [
                         {
                           id: 1,
                           type: 'number',
+                          memo: '※小数点以下四捨五入',
                           caption: '',
                           before_string: '',
                           after_string: 'cm',
@@ -160,12 +175,13 @@ export default {
                       type: 2,
                       question: '体重',
                       memo: '',
-                      caution: '小数点以下四捨五入',
+                      caution: '',
                       required_flag: 1,
                       answerItems: [
                         {
                           id: 2,
                           type: 'number',
+                          memo: '※小数点以下四捨五入',
                           caption: '',
                           before_string: '',
                           after_string: 'kg',
@@ -1137,15 +1153,28 @@ export default {
     font-size: 1rem;
     // line-height: 1.5;
     border-radius: .25rem;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
     line-height: 1;
     width: 150px;
     height: 40px;
   }
+  .btn-back {
+    border: 1px solid #007bff;
+    color: #007bff;
+  }
   .btn-next {
     margin-left: 10px;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  .btn-next:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0069d9;
+  }
+  .btn-back:hover {
+    color: #fff;
+    background-color: #007bff;
   }
 }
 
@@ -1162,12 +1191,6 @@ export default {
   margin-right: 10px;
   padding: 2px 4px;
   letter-spacing: 0.2em;
-}
-
-.btn:hover {
-  color: #fff;
-  background-color: #0069d9;
-  border-color: #0062cc;
 }
 
 .number-plus-btn {
@@ -1197,6 +1220,113 @@ export default {
   outline: none;
 }
 
+$md-radio-checked-color: rgb(51, 122, 183);
+$md-radio-border-color: #007bff;
+$md-radio-size: 20px;
+$md-radio-checked-size: 10px; 
+$md-radio-ripple-size: 15px;
+
+.radio-inline__input {
+  display:none;
+  &:checked + label:before {
+    // border-color: $md-radio-checked-color;
+    animation: ripple 0.2s linear forwards;
+  }
+  &:checked + label:after {
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+  }
+}
+
+.radio-inline__label {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 2rem;
+  margin-right: 18px;
+  border-radius: 3px;
+  transition: all .2s;
+  width: 100%;
+  border: 1px solid #007bff;
+  color: #007bff;
+  text-align: center;
+  &:before, &:after {
+    position: absolute;
+    content: '';  
+    border-radius: 50%;
+    transition: all .3s ease;
+    transition-property: transform, border-color;
+    z-index:10000;
+  }
+  &:before {
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    width: $md-radio-size;
+    height: $md-radio-size;
+    border: 1px solid $md-radio-border-color;
+  }
+  &:after {
+    left: 13px;
+    top: 50%;
+    transform: scale(0);
+    width:$md-radio-checked-size;
+    height:$md-radio-checked-size;
+    background:$md-radio-checked-color;
+  }
+}
+
+.checkbox-inline__input {
+  display:none;
+}
+.checkbox-inline__label {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 2rem;
+  margin-right: 18px;
+  border-radius: 3px;
+  transition: all .2s;
+  width: 100%;
+  border: 1px solid #007bff;
+  color: #007bff;
+  text-align: center;
+  &:before, &:after {
+    position: absolute;
+    content: '';
+    border-radius: 10%;
+    transition: all .3s ease;
+    transition-property: transform, border-color;
+    z-index:10000;
+  }
+  &:before {
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    width: $md-radio-size;
+    height: $md-radio-size;
+    border: 1px solid $md-radio-border-color;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    box-sizing: border-box;
+    width: 18px;
+    height: 9px;
+    margin-top: -9px;
+    top: 50%;
+    left: 8px;
+    transform: rotate(-45deg);
+    border-bottom: 3px solid;
+    border-left: 3px solid;
+    border-color:  #007bff; /* チェックの色変更 お好きな色を */
+    display:none;
+  }
+}
+.checkbox-inline__input:checked + label::after{
+  display:inline;
+}
 
 input[type="number"]::-webkit-outer-spin-button, 
 input[type="number"]::-webkit-inner-spin-button { 
