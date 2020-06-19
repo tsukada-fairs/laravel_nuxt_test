@@ -88,8 +88,8 @@
             </div>
           </div>
           <div class="btn-wrap">
-            <button id="btn-prev" @click="prev" v-show="currentIndex > 0">戻る</button>
-            <button id="btn-next" class="btn-next" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
+            <button id="btn-prev" class="btn" @click="prev" v-show="currentIndex > 0">戻る</button>
+            <button id="btn-next" class="btn-next btn" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
           </div>
         </validation-observer>
       </slide>
@@ -1095,12 +1095,12 @@ export default {
 }
 .section {
   text-align: center;
-  font-size: 20px;
+  font-size: 24px;
   padding: 15px;
 }
 .slide-wrap {
   padding: 30px;
-  font-size: 20px;
+  font-size: 22px;
   // color: #fff;
   .question-wrap {
     margin-top: 15px;
@@ -1123,7 +1123,24 @@ export default {
 }
 .btn-wrap {
   text-align: center;
-  button {
+  .btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    // line-height: 1.5;
+    border-radius: .25rem;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    line-height: 1;
     width: 150px;
     height: 40px;
   }
@@ -1147,6 +1164,12 @@ export default {
   letter-spacing: 0.2em;
 }
 
+.btn:hover {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
 .number-plus-btn {
   display: inline-block;
   font-weight: 400;
@@ -1166,7 +1189,7 @@ export default {
   background-color: #007bff;
   border-color: #007bff;
   width: 100px;
-  height: 20px;
+  height: 30px;
   line-height: 1;
 }
 
@@ -1204,9 +1227,14 @@ input[type='text'], input[type='number'] {
   border-radius: 4px;
 }
 
+input[type='text'], input[type='number'], textarea {
+  font-size: 110%;
+}
+input[type='text'] {
+  width: 200px;
+}
 input[type='number'] {
   width: 100px;
-  font-size: 110%;
 }
 
 @media (min-width: 1021px) {
