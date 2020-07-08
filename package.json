@@ -19,5 +19,9 @@
     "sass-loader": "^8.0.2",
     "vee-validate": "^3.3.3",
     "vue-long-click": "0.0.4"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.13.3",
+    "@nuxt/typescript-build": "^2.0.0"
   }
 }

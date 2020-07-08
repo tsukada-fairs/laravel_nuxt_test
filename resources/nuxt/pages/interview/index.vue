@@ -1,112 +1,114 @@
 <template>
   <div style="padding-bottom: 15px;">
     <p class="section">{{section}}</p>
-    <hooper ref="slider" :settings="hooperSettings" @slide="after">
-      <slide v-for="(interviewPage, index1) in interviewSheet.interview_pages" :key="interviewPage.id">
-        <validation-observer :ref="`validationObserver${index1}`" tag="div" v-slot="{handleSubmit}">
-          <div class="slide-wrap">
-            <div v-for="questionItem in interviewPage.question_items" :key="questionItem.id" class="question-wrap">
-              <p class="question"><span class="must" v-if="questionItem.required_flag">必須</span>Q. {{questionItem.question}}</p>
-              <p class="question-attention">{{questionItem.memo}}</p>
-              <div v-if="questionItem.answer_items.length > 0" class="question-item-wrap">
-                <div class="question-item-input">
-                  <div v-for="answerItem in questionItem.answer_items" :key="answerItem.id" class="question-item-input-wrap">
-                    <validation-provider v-slot="{ errors }" :rules="questionItem.required_flag == 1 ? 'required' : ''" :name="questionItem.question" tag="div">
-                      <div v-if="answerItem.type == 'text'">
-                        {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
-                      </div>
-                      <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
-                        <div style="margin-right: 5px;">
-                          <div style="margin-bottom: 3px;">
-                            <button
-                              v-longclick="() => stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
-                              @click="stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)" type="button" class="number-plus-btn">＋</button>
-                          </div>
-                          <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :value="answerItem.num_default" :placeholder="answerItem.placeholder">
-                          <div style="margin-top: 3px;">
-                            <button
-                              v-longclick="() => stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
-                              @click="stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
-                              type="button" class="number-plus-btn">ー</button>
-                          </div>
+    <div :style="{height: contentHeight}">
+      <hooper ref="slider" :settings="hooperSettings" @slide="after">
+        <slide v-for="(interviewPage, index1) in interviewSheet.interview_pages" :key="interviewPage.id">
+          <validation-observer :ref="`validationObserver${index1}`" tag="div" v-slot="{handleSubmit}">
+            <div class="slide-wrap">
+              <div v-for="questionItem in interviewPage.question_items" :key="questionItem.id" class="question-wrap">
+                <p class="question"><span class="must" v-if="questionItem.required_flag">必須</span>Q. {{questionItem.question}}</p>
+                <p class="question-attention">{{questionItem.memo}}</p>
+                <div v-if="questionItem.answer_items.length > 0" class="question-item-wrap">
+                  <div class="question-item-input">
+                    <div v-for="answerItem in questionItem.answer_items" :key="answerItem.id" class="question-item-input-wrap">
+                      <validation-provider v-slot="{ errors }" :rules="questionItem.required_flag == 1 ? 'required' : ''" :name="questionItem.question" tag="div">
+                        <div v-if="answerItem.type == 'text'">
+                          {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
                         </div>
-                        <div>{{answerItem.after_string}}</div>
-                      </div>
-                      <div v-if="answerItem.type == 'radio'" style="position: relative;">
-                        <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
-                        <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
-                      </div>
-                      <div v-if="answerItem.type == 'checkbox'">
-                        <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]">
-                        <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
-                      </div>
-                      <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]"></textarea></div>
-                      <p class="question-attention">{{answerItem.memo}}</p>
-                      <p v-show="errors.length" class="error">
-                        {{ errors[0] }}
-                      </p>
-                    </validation-provider>
+                        <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
+                          <div style="margin-right: 5px;">
+                            <div style="margin-bottom: 3px;">
+                              <button
+                                v-longclick="() => stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                @click="stepUpNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)" type="button" class="number-plus-btn">＋</button>
+                            </div>
+                            <input :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]" :value="answerItem.num_default" :placeholder="answerItem.placeholder">
+                            <div style="margin-top: 3px;">
+                              <button
+                                v-longclick="() => stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                @click="stepDownNumber(`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`, answerItem)"
+                                type="button" class="number-plus-btn">ー</button>
+                            </div>
+                          </div>
+                          <div>{{answerItem.after_string}}</div>
+                        </div>
+                        <div v-if="answerItem.type == 'radio'" style="position: relative;">
+                          <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
+                          <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
+                        </div>
+                        <div v-if="answerItem.type == 'checkbox'">
+                          <input :id="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}`]">
+                          <label :for="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
+                        </div>
+                        <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${questionItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${questionItem.id}_${answerItem.id}`]"></textarea></div>
+                        <p class="question-attention">{{answerItem.memo}}</p>
+                        <p v-show="errors.length" class="error">
+                          {{ errors[0] }}
+                        </p>
+                      </validation-provider>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div v-if="questionItem.child_items.length > 0">
-                <div v-for="childItem in questionItem.child_items" :key="childItem.id">
-                  <div class="question-item-wrap">
-                    <p class="question-item"><span class="must" v-if="childItem.required_flag">必須</span>{{childItem.question}}</p>
-                    <p class="question-attention">{{childItem.memo}}</p>
-                    <div class="question-item-input">
-                      <div v-for="answerItem in childItem.answer_items" :key="answerItem.id" class="question-item-input-wrap">
-                        <validation-provider v-slot="{ errors }" :rules="childItem.required_flag == 1 ? 'required' : ''" :name="childItem.question" tag="div">
-                          <div v-if="answerItem.type == 'text'">
-                            {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
-                          </div>
-                          <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
-                            <div style="margin-right: 5px;">
-                              <div style="margin-bottom: 3px;">
-                                <button 
-                                  v-longclick="() => stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
-                                  @click="stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
-                                  type="button" class="number-plus-btn">＋</button>
-                              </div>
-                              <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder">
-                              <div style="margin-top: 3px;">
-                                <button 
-                                  v-longclick="() => stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
-                                  @click="stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
-                                  type="button" class="number-plus-btn">ー</button>
-                              </div>
+                <div v-if="questionItem.child_items.length > 0">
+                  <div v-for="childItem in questionItem.child_items" :key="childItem.id">
+                    <div class="question-item-wrap">
+                      <p class="question-item"><span class="must" v-if="childItem.required_flag">必須</span>{{childItem.question}}</p>
+                      <p class="question-attention">{{childItem.memo}}</p>
+                      <div class="question-item-input">
+                        <div v-for="answerItem in childItem.answer_items" :key="answerItem.id" class="question-item-input-wrap">
+                          <validation-provider v-slot="{ errors }" :rules="childItem.required_flag == 1 ? 'required' : ''" :name="childItem.question" tag="div">
+                            <div v-if="answerItem.type == 'text'">
+                              {{answerItem.before_string}} <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder"> {{answerItem.after_string}}
                             </div>
-                            <div>{{answerItem.after_string}}</div>
-                          </div>
-                          <div v-if="answerItem.type == 'radio'" style="position: relative;">
-                            <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
-                            <label :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
-                          </div>
-                          <div v-if="answerItem.type == 'checkbox'">
-                            <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" class="checkbox-inline__input"> 
-                            <label class="checkbox-inline__label" :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
-                          </div>
-                          <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]"></textarea></div>
-                          <p class="question-attention">{{answerItem.memo}}</p>
-                          <p v-show="errors.length" class="error">
-                            {{ errors[0] }}
-                          </p>
-                        </validation-provider>
+                            <div v-if="answerItem.type == 'number'" class="answerItem-wrap-flex">
+                              <div style="margin-right: 5px;">
+                                <div style="margin-bottom: 3px;">
+                                  <button 
+                                    v-longclick="() => stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    @click="stepUpNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    type="button" class="number-plus-btn">＋</button>
+                                </div>
+                                <input :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]" :placeholder="answerItem.placeholder">
+                                <div style="margin-top: 3px;">
+                                  <button 
+                                    v-longclick="() => stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    @click="stepDownNumber(`${interviewSheet.id}_${childItem.id}_${answerItem.id}`, answerItem)"
+                                    type="button" class="number-plus-btn">ー</button>
+                                </div>
+                              </div>
+                              <div>{{answerItem.after_string}}</div>
+                            </div>
+                            <div v-if="answerItem.type == 'radio'" style="position: relative;">
+                              <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" :value="answerItem.caption" class="radio-inline__input">
+                              <label :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" class="radio-inline__label">{{answerItem.caption}}</label>
+                            </div>
+                            <div v-if="answerItem.type == 'checkbox'">
+                              <input :id="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" :type="answerItem.type" :value="answerItem.id" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}`]" class="checkbox-inline__input"> 
+                              <label class="checkbox-inline__label" :for="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`">{{answerItem.caption}}</label>
+                            </div>
+                            <div v-if="answerItem.type == 'textarea'"><textarea rows="5" :ref="`input_${interviewSheet.id}_${childItem.id}_${answerItem.id}`" v-model="interviewAnswers[`${interviewSheet.id}_${childItem.id}_${answerItem.id}`]"></textarea></div>
+                            <p class="question-attention">{{answerItem.memo}}</p>
+                            <p v-show="errors.length" class="error">
+                              {{ errors[0] }}
+                            </p>
+                          </validation-provider>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="btn-wrap">
-            <button id="btn-prev" class="btn btn-back" @click="prev" v-show="currentIndex > 0">戻る</button>
-            <button id="btn-next" class="btn btn-next" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
-          </div>
-        </validation-observer>
-      </slide>
-      <hooper-progress slot="hooper-addons"></hooper-progress>
-    </hooper>
+            <div class="btn-wrap">
+              <button id="btn-prev" class="btn btn-back" @click="prev" v-show="currentIndex > 0">戻る</button>
+              <button id="btn-next" class="btn btn-next" @click="handleSubmit(next)" v-show="hasNext">次へ</button>
+            </div>
+          </validation-observer>
+        </slide>
+        <hooper-progress slot="hooper-addons"></hooper-progress>
+      </hooper>
+    </div>
   </div>
 </template>
 
@@ -128,6 +130,7 @@ export default {
       page: 1,
       currentIndex: 0,
       hasNext: true,
+      contentHeight: 'auto',
       section: '',
       interviewAnswers: {},
       hooperSettings: { 
@@ -152,52 +155,18 @@ export default {
       // }
       // console.log(this.interviewAnswers);
 
-      for(let j in this.interviewSheet.interview_pages) {
-        let interviewPage = this.interviewSheet.interview_pages[j];
-        for(let k in interviewPage.question_items) {
-          let questionItem = interviewPage.question_items[k]
-          for(let l in questionItem.answer_items) {
-            let answerItem = questionItem.answer_items[l];
-            let keyName = '';
-            if(answerItem.type == 'radio') {
-              keyName = this.interviewSheet.id + '_' + questionItem.id;
-              this.$set(this.interviewAnswers, keyName, '');
-            } else if(answerItem.type == 'checkbox') {
-                keyName = this.interviewSheet.id + '_' + questionItem.id;
-                if(!(keyName in this.interviewAnswers)) {
-                  this.$set(this.interviewAnswers, keyName, []);
-                }
-            } else if(answerItem.type == 'number') {
-              keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;;
-              this.$set(this.interviewAnswers, keyName, answerItem.num_default);
-            } else {
-              keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;
-              this.$set(this.interviewAnswers, keyName, '');
-            }
-          }
-          for(let l in questionItem.child_items) {
-            let childItem = questionItem.child_items[l];
-            for(let m in childItem.answer_items) {
-              let answerItem = childItem.answer_items[m];
-              let keyName = '';
-              if(answerItem.type == 'radio') {
-                this.$set(this.interviewAnswers, this.interviewSheet.id + '_' + childItem.id, '');
-              } else if(answerItem.type == 'checkbox') {
-                keyName = this.interviewSheet.id + '_' + childItem.id;
-                if(!(keyName in this.interviewAnswers)) {
-                  this.$set(this.interviewAnswers, keyName, []);
-                }
-              } else if(answerItem.type == 'number') {
-                keyName = this.interviewSheet.id + '_' + childItem.id + '_' + answerItem.id;;
-                this.$set(this.interviewAnswers, keyName, answerItem.num_default);
-              } else {
-                keyName = this.interviewSheet.id + '_' + childItem.id + '_' + answerItem.id;
-                this.$set(this.interviewAnswers, keyName, '');
-              }
-            }
-          }
-        }
-      }
+      this.interviewSheet.interview_pages.forEach(interviewPage => {
+        interviewPage.question_items.forEach(questionItem => {
+          questionItem.answer_items.forEach(answerItem => {
+            this.setAnswerKey(answerItem, questionItem);
+          });
+          questionItem.child_items.forEach(childItem => {
+            childItem.answer_items.forEach(answerItem => {
+              this.setAnswerKey(answerItem, childItem);
+            });
+          });
+        });
+      });
     }
 
     const prepareProcess = async () => {
@@ -218,6 +187,28 @@ export default {
         await dispatch("getInterviewSheet");
       }
     }),
+    setAnswerKey: function(answerItem, questionItem) {
+      let keyName = '';
+      switch(answerItem.type) {
+        case 'radio':
+          keyName = this.interviewSheet.id + '_' + questionItem.id;
+          this.$set(this.interviewAnswers, keyName, '');
+          break;
+        case 'checkbox':
+          keyName = this.interviewSheet.id + '_' + questionItem.id;
+          if(!(keyName in this.interviewAnswers)) {
+            this.$set(this.interviewAnswers, keyName, []);
+          }
+          break;
+        case 'number':
+          keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;;
+          this.$set(this.interviewAnswers, keyName, answerItem.num_default);
+          break;
+        default:
+          keyName = this.interviewSheet.id + '_' + questionItem.id + '_' + answerItem.id;
+          this.$set(this.interviewAnswers, keyName, '');
+      }
+    },
     prev: function() {
       if(this.$refs.slider.isSliding) {
         return;
@@ -260,12 +251,16 @@ export default {
         this.hasNext = false;
       }
       this.section = this.interviewSheet.interview_pages[this.currentIndex].section;
-      return;
     },
     after: function(payload) {
       if(payload.slideFrom == null) {
         return;
       }
+
+
+      // console.log(this.currentIndex);
+      // console.log(this.$refs.slider.$children[this.currentIndex + 1].$el.style);
+      // this.contentHeight = 535 + 'px';
 
       window.scrollTo(0, 0);
 
@@ -281,52 +276,44 @@ export default {
     /**
      * ページ制御
      */
-    controlPage: function(baseIndex) {
-      let pageConditions = this.interviewSheet.interview_pages[baseIndex].page_conditions;
+    controlPage: function(nextIndex) {
+      let pageConditions = this.interviewSheet.interview_pages[nextIndex].page_conditions;
       // console.log(pageConditions);
 
       let fullfilled = true;
+
       for(let i in pageConditions) {
         let pageCondition = pageConditions[i];
         let text = '';
 
-        for(let j in this.interviewSheet.interview_pages) {
-          let interviewPage = this.interviewSheet.interview_pages[j];
-          if(interviewPage.id == pageCondition.interview_page_id) {
-            for(let k in interviewPage.question_items) {
-              let questionItem = interviewPage.question_items[k]
-              if(questionItem.id == pageCondition.question_item_id) {
-                for(let l in questionItem.answer_items) {
-                  let answerItem = questionItem.answer_items[l];
-                  if(answerItem.id == pageCondition.answer_item_id) {
-                    text = answerItem.caption;
-                    break;
-                  }
-                }
-              } else {
-                for(let l in questionItem.child_items) {
-                  let childItem = questionItem.child_items[l];
-                  if(childItem.id == pageCondition.question_item_id) {
-                    for(let m in childItem.answer_items) {
-                      let answerItem = childItem.answer_items[m];
-                      if(answerItem.id == pageCondition.answer_item_id) {
-                        text = answerItem.caption;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
+        let interviewPage = this.interviewSheet.interview_pages.find(interviewPage => {
+          return interviewPage.id == pageCondition.interview_page_id;
+        });
+
+        let questionItem = interviewPage.question_items.find(questionItem => {
+          if(questionItem.id == pageCondition.question_item_id) {
+            return true;
+          } else {
+            let childItem = questionItem.child_items.find(childItem => {
+              return childItem.id == pageCondition.question_item_id
+            });
+            if(childItem !== undefined) {
+              return true;
             }
           }
-        }
-        let partFullfilled = false;
+        });
+
+        let answerItem = questionItem.answer_items.find(answerItem => {
+          return answerItem.id == pageCondition.answer_item_id;
+        });
+
+        text = answerItem.caption;
+
         let name = 'input_' + this.interviewSheet.id + '_' + pageCondition.question_item_id + '_' + pageCondition.answer_item_id;
-        for(let i in this.$refs[name]) {
-          if(this.$refs[name][i].checked && this.$refs[name][i].value == text) {
-            partFullfilled = true;
-          }
-        }
+        let partFullfilled = this.$refs[name].some(elm => {
+          return elm.value == text && elm.checked
+        });
+        
         if(!partFullfilled) {
           fullfilled = false;
           break;
